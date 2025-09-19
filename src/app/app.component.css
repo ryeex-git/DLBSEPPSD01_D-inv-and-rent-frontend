@@ -1,0 +1,64 @@
+/* Volle Höhe für das Layout */
+mat-sidenav-container,
+.h-screen {
+  height: 100vh;
+}
+
+/* Utility-Klassen (falls kein Tailwind benutzt wird) */
+.flex-1 {
+  flex: 1 1 auto;
+}
+.pl-2 {
+  padding-left: 0.5rem;
+}
+.ml-3 {
+  margin-left: 0.75rem;
+}
+.p-4 {
+  padding: 1rem;
+}
+
+/* Sidenav / Toolbar Feinschliff */
+mat-sidenav {
+  width: 260px;
+}
+
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Aktiver Link in der Nav */
+a.active {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Kleinere Abstände für Chip-Liste im Header */
+mat-chip-list {
+  margin-right: 0.5rem;
+}
+
+/* Optionale Hover-Optik für Tabellenzeilen (falls global nicht gesetzt) */
+tr.mat-row:hover {
+  background: rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+}
+
+.h-screen { height: 100vh; }
+.flex-1 { flex: 1 1 auto; }
+.pl-2 { padding-left: .5rem; }
+.p-4 { padding: 1rem; }
+
+/* Aktiver Nav-Link klar hervorheben */
+a.mat-list-item.active {
+  background: rgba(0,0,0,0.06);
+  font-weight: 600;
+}
+a.mat-list-item.active mat-icon {
+  opacity: 1;
+}
+a.mat-list-item mat-icon {
+  margin-right: .5rem;
+  opacity: .75;
+}

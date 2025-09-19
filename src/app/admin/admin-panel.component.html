@@ -1,0 +1,140 @@
+<section class="space-y-6" data-testid="admin-panel">
+  <h2 class="m-0">Admin</h2>
+
+  <mat-card *ngIf="!isAdmin" class="mat-elevation-z1">
+    <mat-card-content>
+      <p>Adminfunktionen sind aktiv, wenn du den Admin-PIN gesetzt hast.</p>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-tab-group>
+    <mat-tab label="Kategorien">
+      <div class="grid md:grid-cols-3 gap-3 mt-3">
+        <mat-form-field appearance="outline">
+          <mat-label>Neue Kategorie</mat-label>
+          <input
+            matInput
+            [(ngModel)]="newCategory"
+            name="newCategory"
+            placeholder="z. B. Werkzeuge"
+            data-testid="input-category"
+          />
+        </mat-form-field>
+
+        <div class="flex items-end">
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="addCategory()"
+            [disabled]="!newCategory.trim() || loadingCats"
+            data-testid="btn-category-add"
+          >
+            <mat-icon>add</mat-icon>
+            Hinzufügen
+          </button>
+        </div>
+      </div>
+
+      <mat-progress-bar *ngIf="loadingCats" mode="indeterminate" class="mt-3"></mat-progress-bar>
+
+      <table mat-table [dataSource]="categoryDs" class="mat-elevation-z1 mt-4" data-testid="tbl-categories">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let c">{{ c.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="w-0"></th>
+          <td mat-cell *matCellDef="let c" class="text-right">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteCategory(c)"
+              [disabled]="loadingCats"
+              aria-label="Kategorie löschen"
+              data-testid="btn-category-del"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['name','actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name','actions']"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="2">Keine Kategorien vorhanden.</td>
+        </tr>
+      </table>
+    </mat-tab>
+
+    <mat-tab label="Standorte">
+      <mat-card *ngIf="!enableLocations" class="mat-elevation-z1 mt-3">
+        <mat-card-content>
+          <p>
+            Standorte sind noch nicht aktiviert. Setze <code>enableLocations = true</code> und implementiere
+            die <code>/locations</code>-Endpunkte im Backend, um diese Tab zu nutzen.
+          </p>
+        </mat-card-content>
+      </mat-card>
+
+      <div *ngIf="enableLocations">
+        <div class="grid md:grid-cols-3 gap-3 mt-3">
+          <mat-form-field appearance="outline">
+            <mat-label>Neuer Standort</mat-label>
+            <input
+              matInput
+              [(ngModel)]="newLocation"
+              name="newLocation"
+              placeholder="z. B. Lager A"
+              data-testid="input-location"
+            />
+          </mat-form-field>
+
+          <div class="flex items-end">
+            <button
+              mat-flat-button
+              color="primary"
+              (click)="addLocation()"
+              [disabled]="!newLocation.trim() || loadingLocs"
+              data-testid="btn-location-add"
+            >
+              <mat-icon>add</mat-icon>
+              Hinzufügen
+            </button>
+          </div>
+        </div>
+
+        <mat-progress-bar *ngIf="loadingLocs" mode="indeterminate" class="mt-3"></mat-progress-bar>
+
+        <table mat-table [dataSource]="locationDs" class="mat-elevation-z1 mt-4" data-testid="tbl-locations">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let l">{{ l.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="w-0"></th>
+            <td mat-cell *matCellDef="let l" class="text-right">
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="deleteLocation(l)"
+                [disabled]="loadingLocs"
+                data-testid="btn-location-del"
+                aria-label="Standort löschen"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['name','actions']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['name','actions']"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="2">Keine Standorte vorhanden.</td>
+          </tr>
+        </table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</section>

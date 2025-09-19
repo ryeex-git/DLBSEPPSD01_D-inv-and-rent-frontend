@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Ausgabe (Ausleihe starten)</h2>
+
+<mat-dialog-content class="dialog-content">
+  <div class="item-hint" *ngIf="data?.item">
+    <mat-icon aria-hidden="true">inventory_2</mat-icon>
+    <div>
+      <div class="name">{{ data?.item?.name || 'Item' }}</div>
+      <div class="muted">#{{ data?.item?.inventoryNo || '—' }}</div>
+    </div>
+  </div>
+
+  <form [formGroup]="form" class="form-grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Fälligkeits-Datum</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="dueDate" [min]="minDate" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="form.controls.dueDate.invalid && form.controls.dueDate.touched">
+        Datum erforderlich
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fälligkeits-Uhrzeit</mat-label>
+      <input matInput type="time" formControlName="dueTime" />
+      <mat-error *ngIf="form.controls.dueTime.invalid && form.controls.dueTime.touched">
+        Uhrzeit erforderlich
+      </mat-error>
+      <mat-error *ngIf="form.hasError('dueNotInFuture')">
+        Zeitpunkt muss in der Zukunft liegen.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Notiz (optional)</mat-label>
+      <textarea matInput rows="2" formControlName="note" placeholder="z. B. Projekt/zweck"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Abbrechen</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="form.invalid">
+    <mat-icon>assignment_turned_in</mat-icon>
+    Ausgeben
+  </button>
+</mat-dialog-actions>

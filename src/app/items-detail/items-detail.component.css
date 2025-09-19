@@ -1,0 +1,47 @@
+/* Abstände/Typo */
+.space-y-4 > * + * { margin-top: 1rem; }
+.mt-4 { margin-top: 1rem; }
+.m-0 { margin: 0; }
+
+/* Grid für Detailbereich */
+.grid {
+  display: grid;
+}
+.md\:grid-cols-2 {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.gap-4 { gap: 1rem; }
+
+/* Chips für Status (read-only) */
+mat-chip { font-weight: 500; }
+mat-chip[color="warn"]   { /* DEFECT */ }
+mat-chip[color="accent"] { /* OUT */ }
+
+/* Tabelle Historie leicht betonen */
+table[mat-table] {
+  width: 100%;
+}
+table[mat-table] tr.mat-row:hover {
+  background: rgba(0,0,0,0.02);
+}
+
+/* Buttons neben Titel */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: .5rem; }
+
+/* Kleinere Hinweise */
+.text-sm { font-size: .875rem; line-height: 1.25rem; }
+.text-gray-600 { color: rgba(0,0,0,0.6); }
+
+/* Dialoge brauchen keine speziellen Styles; globales Material-Theme greift */
+mat-chip.chip { font-weight: 500; }
+mat-chip.chip-ok     { background: rgba(76,175,80,.12);  color: #2e7d32; }
+mat-chip.chip-out    { background: rgba(3,169,244,.12);  color: #1565c0; }
+mat-chip.chip-defect { background: rgba(244,67,54,.12); color: #c62828; }

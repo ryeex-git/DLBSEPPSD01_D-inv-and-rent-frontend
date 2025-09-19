@@ -1,0 +1,21 @@
+/* Überschrift ohne extra Abstand */
+h2.m-0 { margin: 0; }
+
+/* Grid/Abstände wie in den anderen Komponenten */
+.grid { display: grid; }
+.gap-3 { gap: .75rem; }
+.mt-3 { margin-top: .75rem; }
+.mt-4 { margin-top: 1rem; }
+
+/* 3 Spalten ab mittleren Screens */
+.md\:grid-cols-3 { grid-template-columns: 1fr; }
+@media (min-width: 768px) {
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Tabelle dezent */
+table[mat-table] { width: 100%; }
+table[mat-table] tr.mat-row:hover { background: rgba(0,0,0,0.02); }
+
+/* Actions rechtsbündig */
+.mat-column-actions { text-align: right; width: 1%; white-space: nowrap; }

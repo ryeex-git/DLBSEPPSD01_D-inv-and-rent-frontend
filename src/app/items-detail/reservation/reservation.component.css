@@ -1,0 +1,21 @@
+.dialog-content { display: grid; gap: 12px; min-width: 420px; }
+
+.item-hint {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: 8px; background: #fafafa; border: 1px solid #eee;
+}
+.item-hint mat-icon { color: #616161; }
+.item-hint .name { font-weight: 600; }
+.item-hint .muted { color: #757575; font-size: 12px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 130px 130px;
+  gap: 12px;
+}
+.form-grid .full { grid-column: 1 / -1; }
+
+@media (max-width: 560px) {
+  .dialog-content { min-width: 0; }
+  .form-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,31 @@
+<div class="timeline-wrap" [class.compact]="compact">
+  <div class="toolbar">
+    <button mat-button (click)="prev(7)"><mat-icon>chevron_left</mat-icon> -7</button>
+    <button mat-stroked-button (click)="today()">Heute</button>
+    <button mat-button (click)="next(7)">+7 <mat-icon>chevron_right</mat-icon></button>
+    <span class="spacer"></span>
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+  </div>
+
+  <!-- Header (Tage) -->
+  <div class="grid header" [style.--days]="days">
+    <div class="cell" *ngFor="let d of daysArr" [class.weekend]="d.isWeekend">
+      {{ d.label }}
+    </div>
+  </div>
+
+  <!-- Body (Balken) -->
+  <div class="grid body" [style.--days]="days" [style.--lanes]="lanes">
+    <div class="vline" *ngFor="let _ of daysArr; let i = index" [style.gridColumn]="i + 1"></div>
+    <div class="now-line" *ngIf="showTodayLine && todayCol >= 0" [style.gridColumn]="todayCol + 1"></div>
+
+    <div class="{{ barClass(p.span) }}"
+         *ngFor="let p of positioned"
+         [style.gridColumn]="(p.colStart + 1) + ' / ' + (p.colEnd + 1)"
+         [style.gridRow]="p.lane + 1"
+         [matTooltip]="tooltip(p.span)"
+         matTooltipPosition="above">
+      <span class="bar-label">{{ p.span.label || (p.span.type === 'LOAN' ? 'Ausleihe' : 'Reservierung') }}</span>
+    </div>
+  </div>
+</div>

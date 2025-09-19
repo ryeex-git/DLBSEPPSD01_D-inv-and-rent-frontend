@@ -1,0 +1,95 @@
+<section class="space-y-3" data-testid="items-list">
+    <form class="grid gap-3 md:grid-cols-4" (ngSubmit)="applyFilters()">
+      <mat-form-field appearance="outline">
+        <mat-label>Suche</mat-label>
+        <input matInput placeholder="Name, Inventarnummer, Tags" [(ngModel)]="filters.search" name="search" data-testid="filter-search">
+        <button *ngIf="filters.search" matSuffix mat-icon-button aria-label="Suche löschen" (click)="filters.search=''; applyFilters()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline">
+        <mat-label>Kategorie</mat-label>
+        <mat-select [(ngModel)]="filters.categoryId" name="categoryId" data-testid="filter-category">
+          <mat-option [value]="''">Alle</mat-option>
+          <mat-option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="filters.status" name="status" data-testid="filter-status">
+          <mat-option value="">Alle</mat-option>
+          <mat-option value="OK">OK</mat-option>
+          <mat-option value="DEFECT">Defekt</mat-option>
+          <mat-option value="OUT">Ausgeliehen</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <div class="flex items-end gap-2">
+        <button mat-flat-button color="primary" type="submit" data-testid="btn-filter-apply">
+          <mat-icon>filter_alt</mat-icon> Anwenden
+        </button>
+        <button mat-button type="button" (click)="resetFilters()" data-testid="btn-filter-reset">Zurücksetzen</button>
+        <button *ngIf="isAdmin" mat-flat-button color="accent" type="button" (click)="createItem()" data-testid="btn-item-new">
+          <mat-icon>add</mat-icon> Neu
+        </button>
+      </div>
+    </form>
+  
+    <div class="mat-elevation-z2">
+      <table mat-table [dataSource]="dataSource" matSort matSortDisableClear data-testid="tbl-items">
+  
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let row">
+            <a [routerLink]="['/items', row.id]" class="font-medium">{{ row.name }}</a>
+            <div class="text-xs text-gray-500">#{{ row.inventoryNo }}</div>
+          </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Kategorie</th>
+          <td mat-cell *matCellDef="let row">{{ row.category?.name }}</td>
+        </ng-container>
+  
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let row">
+              <mat-chip-set>
+                <mat-chip
+                  [color]="row.status === 'DEFECT' ? 'warn' : (row.status === 'OUT' ? 'accent' : undefined)"
+                  class="chip"
+                  [class.chip-ok]="row.status==='OK'"
+                  [class.chip-out]="row.status==='OUT'"
+                  [class.chip-defect]="row.status==='DEFECT'">
+                  {{ row.status }}
+                </mat-chip>
+              </mat-chip-set>
+            </td>
+          </ng-container>
+          
+  
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="w-0"></th>
+          <td mat-cell *matCellDef="let row" class="text-right">
+            <button mat-icon-button [routerLink]="['/items', row.id]" aria-label="Öffnen" data-testid="btn-row-open">
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+            <button *ngIf="isAdmin" mat-icon-button (click)="editItem(row)" aria-label="Bearbeiten" data-testid="btn-row-edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button *ngIf="isAdmin" mat-icon-button color="warn" (click)="deleteItem(row)" aria-label="Löschen" data-testid="btn-row-delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50 cursor-pointer"></tr>
+      </table>
+  
+      <mat-paginator [length]="total" [pageSize]="10" [pageSizeOptions]="[10,25,50]" aria-label="Paginierung"></mat-paginator>
+    </div>
+  </section>
+  

@@ -1,0 +1,156 @@
+<section *ngIf="item" class="space-y-4" data-testid="item-detail">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="m-0">{{ item.name }}</h2>
+        <div class="text-sm text-gray-600">#{{ item.inventoryNo }} • {{ item.category?.name }} • {{ item.location?.name }}</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <mat-chip
+        [color]="item.status === 'DEFECT' ? 'warn' : (item.status === 'OUT' ? 'accent' : undefined)"
+        class="chip"
+        [class.chip-ok]="item.status==='OK'"
+        [class.chip-out]="item.status==='OUT'"
+        [class.chip-defect]="item.status==='DEFECT'">
+        {{ item.status }}
+      </mat-chip>  
+        <!-- Nutzeraktionen -->
+        <button mat-stroked-button (click)="openReservationDialog(item)" data-testid="btn-reserve">
+          <mat-icon>event_available</mat-icon> Reservieren
+        </button>
+  
+        <!-- Adminaktionen -->
+        <button *ngIf="isAdmin" mat-flat-button color="primary" (click)="openIssueDialog(item)" data-testid="btn-issue">
+          <mat-icon>assignment_returned</mat-icon> Ausgeben
+        </button>
+        <button *ngIf="isAdmin && canReturn(item)" mat-stroked-button color="accent" (click)="returnItem(item)" data-testid="btn-return">
+          <mat-icon>assignment_turned_in</mat-icon> Rückgabe
+        </button>
+        <button *ngIf="isAdmin" mat-icon-button (click)="editItem(item)" aria-label="Bearbeiten">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+    </div>
+  
+    <mat-tab-group>
+      <mat-tab label="Details">
+        <div class="grid md:grid-cols-2 gap-4 mt-4">
+
+          <!-- Name -->
+          <mat-form-field appearance="fill" *ngIf="isAdmin && (mode==='create' || mode==='edit'); else roName">
+            <mat-label>Name</mat-label>
+            <input matInput [(ngModel)]="item.name" />
+          </mat-form-field>
+          <ng-template #roName>
+            <p><strong>Name:</strong> {{ item.name || '—' }}</p>
+          </ng-template>
+
+          <!-- Inventarnummer -->
+          <mat-form-field appearance="fill" *ngIf="isAdmin && (mode==='create' || mode==='edit'); else roInv">
+            <mat-label>Inventarnummer</mat-label>
+            <input matInput [(ngModel)]="item.inventoryNo" />
+          </mat-form-field>
+          <ng-template #roInv>
+            <p><strong>#</strong> {{ item.inventoryNo || '—' }}</p>
+          </ng-template>
+
+          <!-- Kategorie -->
+          <mat-form-field appearance="fill" *ngIf="isAdmin && (mode==='create' || mode==='edit'); else roCat">
+            <mat-label>Kategorie</mat-label>
+            <mat-select [(ngModel)]="item.category" [compareWith]="compareCat">
+              <mat-option [value]="undefined">—</mat-option>
+              <mat-option *ngFor="let c of categories" [value]="c">{{ c.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <ng-template #roCat>
+            <p><strong>Kategorie:</strong> {{ item.category?.name || '—' }}</p>
+          </ng-template>
+
+          <!-- Zustand -->
+          <mat-form-field appearance="fill" *ngIf="isAdmin && (mode==='create' || mode==='edit'); else roCond">
+            <mat-label>Zustand</mat-label>
+            <mat-select [(ngModel)]="item.condition">
+              <mat-option value="OK">OK</mat-option>
+              <mat-option value="DEFECT">Defekt</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <ng-template #roCond>
+            <p><strong>Zustand:</strong> {{ item.condition || 'OK' }}</p>
+          </ng-template>
+
+          <!-- Standort (nur anzeigen – Backend/Model bei dir noch nicht fertig) -->
+          <p class="col-span-2"><strong>Standort:</strong> {{ item.location?.name || '—' }}</p>
+
+          <!-- Tags -->
+          <div class="col-span-2">
+            <ng-container *ngIf="isAdmin && (mode==='create' || mode==='edit'); else roTags">
+              <mat-form-field class="w-full" appearance="fill">
+                <mat-label>Tag hinzufügen und Enter drücken</mat-label>
+                <input
+                  matInput
+                  placeholder="z. B. Akku, Bosch"
+                  [matChipInputFor]="chipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeys"
+                  (matChipInputTokenEnd)="addTag($event)"
+                />
+              </mat-form-field>
+
+              <mat-chip-grid #chipList aria-label="Tags">
+                <mat-chip *ngFor="let t of item.tags; let i = index" (removed)="removeTag(i)">
+                  {{ t }}
+                  <button matChipRemove aria-label="Tag entfernen">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip>
+              </mat-chip-grid>
+            </ng-container>
+
+            <ng-template #roTags>
+              <p><strong>Tags:</strong>
+                <ng-container *ngIf="item.tags?.length; else noTags">
+                  <mat-chip-grid>
+                    <mat-chip *ngFor="let t of item.tags">{{ t }}</mat-chip>
+                  </mat-chip-grid>
+                </ng-container>
+                <ng-template #noTags>—</ng-template>
+              </p>
+            </ng-template>
+          </div>
+
+          <!-- Speichern-Button -->
+          <div class="col-span-2" *ngIf="isAdmin && (mode==='create' || mode==='edit')">
+            <button mat-flat-button color="primary" (click)="saveBasic()" [disabled]="saving">
+              {{ mode==='create' ? 'Anlegen' : 'Speichern' }}
+            </button>
+          </div>
+        </div>
+      </mat-tab>
+
+  
+      <mat-tab label="Verfügbarkeit">
+        <div class="mt-4">
+          <app-availability-timeline [itemId]="item?.id"></app-availability-timeline>
+        </div>
+      </mat-tab>
+  
+      <mat-tab label="Historie">
+        <table mat-table [dataSource]="historyDs" class="mat-elevation-z1">
+          <ng-container matColumnDef="ts">
+            <th mat-header-cell *matHeaderCellDef>Datum</th>
+            <td mat-cell *matCellDef="let h">{{ h.ts | date:'short' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="actor">
+            <th mat-header-cell *matHeaderCellDef>Aktion durch</th>
+            <td mat-cell *matCellDef="let h">{{ h.user }}</td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Aktion</th>
+            <td mat-cell *matCellDef="let h">{{ h.action }}</td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="['ts','actor','action']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['ts','actor','action']"></tr>
+        </table>
+      </mat-tab>
+    </mat-tab-group>
+  </section>
+  

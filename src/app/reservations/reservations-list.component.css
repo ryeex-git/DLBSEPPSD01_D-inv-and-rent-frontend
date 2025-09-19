@@ -1,0 +1,9 @@
+.filters { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.filters .spacer { flex: 1; }
+.muted { color: #757575; font-size: 12px; }
+table { width: 100%; }
+.actions { display: flex; gap: 8px; justify-content: flex-end; }
+.chip { padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; }
+.chip.approved { background: #e7f6ec; border-color: #c8e6d4; }
+.chip.pending  { background: #fff7e6; border-color: #ffe0a3; }
+.chip.cancelled{ background: #fdeaea; border-color: #f5bcbc; }

@@ -1,0 +1,67 @@
+/* Layout & Abstände */
+.space-y-3 > * + * {
+    margin-top: 0.75rem;
+  }
+  
+  .grid {
+    display: grid;
+  }
+  .gap-3 {
+    gap: 0.75rem;
+  }
+  
+  /* Tailwind-ähnliche Klasse aus dem HTML (Escape des Doppelpunkts!) */
+  .md\:grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .md\:grid-cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  
+  /* Buttons/Actions rechtsbündig in der Tabelle */
+  .mat-column-actions {
+    text-align: right;
+    width: 1%;
+    white-space: nowrap;
+  }
+  
+  /* Tabelle vollbreit */
+  table[mat-table] {
+    width: 100%;
+  }
+  
+  /* Zeilen-Hover (subtil) */
+  tr.mat-row:hover {
+    background: rgba(0, 0, 0, 0.02);
+  }
+  
+  /* Typo/Utils (falls kein Utility-Framework) */
+  .font-medium {
+    font-weight: 500;
+  }
+  .text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  .text-gray-500 {
+    color: rgba(0, 0, 0, 0.54);
+  }
+  
+  /* Kleinere Screens: Filter-Buttons nicht umbrechen lassen */
+  form .flex {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+  
+  /* MatPaginator etwas Luft nach oben */
+  mat-paginator {
+    margin-top: 0.5rem;
+  }
+  
+mat-chip.chip { font-weight: 500; }
+mat-chip.chip-ok    { background: rgba(76,175,80,.12);  color: #2e7d32; }
+mat-chip.chip-out   { background: rgba(3,169,244,.12);  color: #1565c0; }
+mat-chip.chip-defect{ background: rgba(244,67,54,.12); color: #c62828; }
