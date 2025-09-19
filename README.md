@@ -1,27 +1,57 @@
-# InvAndRentManagement
+# Inventar- & Ausleihverwaltung – Frontend (Angular 18)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.8.
+Single-Page-App für eine kleine Inventar- und Ausleihverwaltung.  
+UI basiert auf **Angular 18** und **Angular Material**. Backend ist eine NestJS-API (siehe separates Backend-Repo).
 
-## Development server
+## Features
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Inventarliste mit Suche, Filter (Kategorie, Status), Sortierung & Pagination
+- Item-Detail mit:
+  - Basisdaten (Name, Kategorie, Zustand, Tags)
+  - **Verfügbarkeitstimeline** (Reservierungen/Ausleihen)
+  - Historie (Ereignisse)
+- **Reservierungen**-Übersicht (filterbar, stornieren, genehmigen)
+- **Adminbereich**: Kategorien pflegen (und optional Standorte)
+- **Admin-PIN**: Leichtgewichtige Rollenumschaltung (nur UI; echte Prüfung via Header im Backend)
 
-## Code scaffolding
+## Tech-Stack
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Angular 18
+- Angular Material
+- RxJS
+- HTTP Interceptors:
+  - `AdminPinInterceptor` (setzt `x-admin-pin` Header, wenn Adminmodus aktiv)
 
-## Build
+## Voraussetzungen
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- Node.js **≥ 20**
+- npm **≥ 9**
+- Laufendes Backend (Default: `http://localhost:3000`)
 
-## Running unit tests
+## Setup
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+# Pakete installieren
+npm install
 
-## Running end-to-end tests
+# API-URL einstellen
+# Datei: src/environments/environments.ts
+# export const environment = { production: false, apiUrl: 'http://localhost:3000' };
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Entwicklung starten
 
-## Further help
+```bash
+npm start
+# oder
+ng serve
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+> Falls SSR in deinem Setup aktiv war und Probleme machte: dieses Projekt ist als klassische SPA gedacht. Für Dev reicht `ng serve`/`npm start`.
+
+## Adminmodus / PIN
+
+- Adminmodus wird im Frontend per PIN aktiviert (Dialog/Prompt).
+- Der PIN wird **nicht persistent gespeichert** (nur im RAM).
+- Alle Admin-Requests senden den Header `x-admin-pin: <PIN>`.
+- Das Backend validiert den PIN (siehe Backend-README).
